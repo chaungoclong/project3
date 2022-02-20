@@ -1,0 +1,14 @@
+/*FontAwesome*/
+@import "../template/plugins/fontawesome-free/css/all.min.css";
+
+/*Bootstrap*/
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+/*Datatable BS4*/
+@import "~datatables.net-bs4/css/dataTables.bootstrap4.min.css";
+
+/*AdminLTE*/
+@import "../template/dist/css/adminlte.min.css";
+
+/*Scrollbars*/
+@import "../template/plugins/overlayScrollbars/css/OverlayScrollbars.min.css";

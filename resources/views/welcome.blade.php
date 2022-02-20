@@ -1,0 +1,1 @@
+<x-label class="label label-info">hello</x-label>
