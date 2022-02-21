@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('/admin', [HomeController::class, 'index'])
     ->name('home')
-    ->middleware(['auth', 'hasRole:test']);
+    ->middleware(['auth']);
 
 Route::get('', function() {
     echo "customer";

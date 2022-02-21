@@ -8,10 +8,12 @@ use App\Traits\Authorization\HasPermissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Auditable as AuditableTrait;
 
-class Role extends Model
+class Role extends Model implements Auditable
 {
-    use HasFactory, HasPermissions;
+    use HasFactory, HasPermissions, AuditableTrait;
 
     protected $fillable = [
         'title',
