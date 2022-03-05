@@ -48,10 +48,26 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
+
+            // route for admin
+            Route::prefix('admin')
+                ->name('admin.')
+                ->middleware('web')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/admin.php'));
         });
 
-        Route::model('role', Role::class, function($value) {
-            throw new ModelNotFoundException('Not found Role with id:' . $value);
+        /**
+         * lien ket model Role voi path param
+         * nem loi khi khong tim thay
+         */
+        Route::model('role', Role::class, function ($value) {
+            throw new ModelNotFoundException(
+                __(
+                    'not found with id',
+                    ['name' => 'vai trò', 'value' => $value]
+                )
+            );
         });
     }
 

@@ -14,7 +14,11 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements Auditable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRole, AuditableTrait;
+    use HasApiTokens,
+        HasFactory,
+        Notifiable,
+        HasRole,
+        AuditableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -22,10 +26,12 @@ class User extends Authenticatable implements Auditable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
         'role_id',
+        'status',
     ];
 
     /**
@@ -50,5 +56,35 @@ class User extends Authenticatable implements Auditable
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
+    public function isCustomer(): bool
+    {
+        return (bool) optional($this->role)->isCustomer();
+    }
+
+    public function isAdmin(): bool
+    {
+        return (bool) optional($this->role)->isAdmin();
+    }
+
+    public function isEmployee(): bool
+    {
+        return (bool) optional($this->role)->isEmployee();
+    }
+
+    public function isWebGroup(): bool
+    {
+        return $this->role === null || $this->isCustomer();
+    }
+
+    public function isAdminGroup()
+    {
+        return $this->role !== null && !$this->isCustomer();
+    }
+
+    public function isActive(): bool
+    {
+        return (bool) $this->getRawOriginal('status');
     }
 }

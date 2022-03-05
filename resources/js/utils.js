@@ -48,13 +48,15 @@ export function getValueObjectAt(key, object) {
 // EXCEPTION UTILS
 export function handleError(jqXHR, textStatus, errorThrow) {
     console.log(jqXHR);
-    let status = jqXHR.status;
+    let status   = jqXHR.status;
     let response = jqXHR.responseJSON;
-    let title = textStatus.toUpperCase();
-    let html = '';
-    let message = '';
-    let errors = '';
-    message = ('message' in response) ? `<h5 class="text-danger">${response.message}</h5>` : '';
+    let title    = textStatus.toUpperCase();
+    let html     = '';
+    let message  = '';
+    let errors   = '';
+
+    // message = ('message' in response) ? `<h5 class="text-danger">${response.message}</h5>` : '';
+
     if ('errors' in response) {
         errors = `
             <table class="table table-sm table-bordered mt-2">
@@ -69,12 +71,15 @@ export function handleError(jqXHR, textStatus, errorThrow) {
             errors += `
                 <tr>
                     <td>${field}</td>
-                    <td>${response.errors[field][0]}</td>
+                    <td class="text-danger">${response.errors[field][0]}</td>
                 </tr>`;
         }
+
         errors += `</tbody></table>`;
     }
+
     html = `<div>${message}${errors}</div>`;
+    
     Swal.fire({
         title: title,
         html: `${html}`,

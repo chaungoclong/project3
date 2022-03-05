@@ -39,7 +39,7 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->renderable(function(NoPermissionException $e, $request) {
+        $this->renderable(function (NoPermissionException $e, $request) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => $e->getMessage()
@@ -52,25 +52,28 @@ class Handler extends ExceptionHandler
     protected function prepareException(\Throwable $e)
     {
         if ($e instanceof TokenMismatchException) {
-            $e = new HttpException(419, 'Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn', $e);
+            $e = new HttpException(419, __('unauthenticated'), $e);
         }
 
         return parent::prepareException($e);
     }
 
-    protected function unauthenticated($request, 
-        AuthenticationException $exception) 
-    {
+    protected function unauthenticated(
+        $request,
+        AuthenticationException $exception
+    ) {
         if ($request->expectsJson()) {
             return response()->json([
-                'message' => 'Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn.'
+                'message' => __('unauthenticated')
             ], 401);
         }
 
+        // neu dang nhap admin khong thanh cong
         if ($request->is('admin*')) {
-            return redirect()->route('login.admin.form');
+            return redirect()->route('admin.login.form');
         }
 
-        return redirect()->route('login.web.form');
+        // neu dang nhap customer khong thanh cong
+        return redirect()->route('login.form');
     }
 }

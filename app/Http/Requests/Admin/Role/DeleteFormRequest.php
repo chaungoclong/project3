@@ -25,9 +25,9 @@ class DeleteFormRequest extends FormRequest
      */
     public function rules()
     {
-        $cannotDelete = [
-            Role::where('name', 'admin')->first()->id,
-        ];
+        $cannotDelete = Role::where('is_user_defined', false)->pluck('id')
+            ->toArray();
+
         return [
             'id' => [Rule::notIn($cannotDelete)],
         ];
@@ -36,7 +36,7 @@ class DeleteFormRequest extends FormRequest
     public function messages()
     {
         return [
-            'id.not_in' => 'Cannot delete admin role',
+            'id.not_in' => 'Cannot delete this role',
         ];
     }
 }

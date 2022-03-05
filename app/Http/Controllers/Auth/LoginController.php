@@ -9,28 +9,45 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    public function showFormLogin()
+    {
+        return view('pages.auth.login', ['url' => $this->getUrlLogin()]);
+    }
+
+    public function getUrlLogin()
+    {
+        return request()->is('admin*')
+            ? route('admin.login.process')
+            : route('login.process');
+    }
+
     public function redirectAfterLogin()
     {
         $user = auth()->user();
 
-        alert()->success('Login success');
+        alert()->success(
+            __('action success', ['Action' => 'Đăng nhập'])
+        );
 
-    	if ($user->role === null || $user->hasRole('customer')) {
-    		return redirect()->route('customer.home');
-    	}
+        if ($user->isWebGroup()) {
+            return redirect()->route('home');
+        }
 
-    	return redirect()->route('home');
+        return redirect()->route('admin.home');
     }
 
     public function redirectIfFail()
     {
-        alert()->error('Login failed');
-    	return redirect()->back()->withInput();
+        alert()->error(
+            __('action fail', ['Action' => 'Đăng nhập'])
+        );
+        
+        return redirect()->back()->withInput();
     }
 
     public function login(LoginFormRequest $request)
     {
-    	$credentials = $request->validated();
+        $credentials = $request->validated();
         $remember    = $request->has('remember');
 
         if (Auth::attempt($credentials, $remember)) {

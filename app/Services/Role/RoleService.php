@@ -2,6 +2,7 @@
 
 namespace App\Services\Role;
 
+use App\Exceptions\NoPermissionException;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -16,8 +17,10 @@ class RoleService
     private Role $role;
     private Permission $permission;
 
-    public function __construct(Role $role, Permission $permission)
-    {
+    public function __construct(
+        Role $role,
+        Permission $permission
+    ) {
         $this->role       = $role;
         $this->permission = $permission;
     }
@@ -33,6 +36,13 @@ class RoleService
 
     public function getEditView(Role $role)
     {
+        // dd($role->isCannotChange(), $role->is_user_defined);
+        if ($role->isCannotChange()) {
+            throw new NoPermissionException(
+                __('cannot edit this', ['name' => 'vai trò'])
+            );
+        }
+
         $permissions        = $this->permission->all()->groupBy('group');
         $permissionCheckeds = $role->permissions->pluck('name')->toArray();
 
@@ -52,6 +62,7 @@ class RoleService
     {
         $data['is_default']  = (bool) ($data['is_default'] ?? false);
         $data['permissions'] = $data['permissions'] ?? [];
+
         $data['is_default'] && $this->turnOffDefaultOtherRole();
 
         $role = $this->role->create(Arr::except($data, ['permissions']));
@@ -68,6 +79,12 @@ class RoleService
      */
     public function update(Role $role, array $data): Role
     {
+        if ($role->isCannotChange()) {
+            throw new NoPermissionException(
+                __('cannot edit this', ['name' => 'vai trò'])
+            );
+        }
+
         $data['is_default']  = (bool) ($data['is_default'] ?? false);
         $data['permissions'] = $data['permissions'] ?? [];
 
@@ -102,8 +119,8 @@ class RoleService
     {
         if ($currentRoleId === null) {
             return (bool) $this->role->query()->update(
-                ['is_default' => false,
-                ]);
+                ['is_default' => false]
+            );
         } else {
             return (bool) $this->role->where('id', '<>', $currentRoleId)
                 ->update(['is_default' => false]);
@@ -127,12 +144,15 @@ class RoleService
      */
     public function findById($id): Role
     {
-        $roleFind = $this->role->find($id);
-        if ($roleFind === null) {
-            throw new ModelNotFoundException('Not found Role');
+        $result = $this->role->find($id);
+
+        if ($result === null) {
+            throw new ModelNotFoundException(
+                __('not found with id', ['name' => 'vai trò'])
+            );
         }
 
-        return $roleFind;
+        return $result;
     }
 
     /**
@@ -152,74 +172,50 @@ class RoleService
     public function getDatatables($request)
     {
         $checkeds        = $request->checkeds ?? [];
-        $currentUserRole = auth()->user()->role->id ?? null;
+        $currentRoleId   = auth()->user()->role->id ?? null;
 
         return DataTables::of(
             $this->role->withCount('users')->with('permissions')
-        )
-            ->addIndexColumn()
-            ->addColumn('select', function ($role) use ($checkeds, $currentUserRole) {
-                $isChecked = '';
-
-                if (
-                    in_array($role->id, $checkeds)
-                    && $role->id !== $currentUserRole && $role->name !== 'admin'
-                ) {
-                    $isChecked = 'checked';
+        )->addIndexColumn()
+            ->addColumn(
+                'select',
+                function ($role) use ($checkeds, $currentRoleId) {
+                    return view(
+                        'components.roles.checkbox_select_render',
+                        [
+                            'role'          => $role,
+                            'checkeds'      => $checkeds,
+                            'currentRoleId' => $currentRoleId,
+                        ]
+                    )->render();
                 }
-
-                if ($role->id === $currentUserRole || $role->name === 'admin') {
-                    $isChecked = 'disabled';
-                }
-
-                return '
-                    <input type="checkbox" class="js-select-one-role"
-                        data-role-id="' . $role->id . '"
-                        value="' . $role->id . '" ' . $isChecked . '>';
-            })
+            )
             ->addColumn('users', function ($role) {
                 return $role->users_count;
             })
             ->addColumn('permissions', function ($role) {
-                return $role->permissions->map(
-                    fn($permission) => '<span class="badge badge-success m-1">' . $permission->name . '</span>'
-                )->join('');
+                return view(
+                    'components.roles.badge_permissions_render',
+                    ['permissions' => $role->permissions]
+                )->render();
             })
-            ->addColumn('actions', function ($role) use ($currentUserRole) {
-                if ($role->name !== 'admin' && $role->id !== $currentUserRole) {
-                    $btnEdit = '
-                        <a class="btn btn-primary js-edit-role"
-                            data-role-id="' . $role->id . '"
-                            href="' . route("admin.roles.edit", $role->id) . '">
-                            Edit
-                        </a>';
-
-                    $btnDelete = '
-                    <a class="btn btn-danger js-delete-role"
-                        data-role-id="' . $role->id . '">
-                        Delete
-                    </a>';
-
-                    return '<div class="btn-group btn-group-sm">'
-                        . $btnEdit . $btnDelete . '
-                           </div>';
-                }
-
-                return "";
+            ->addColumn('actions', function ($role) use ($currentRoleId) {
+                return view(
+                    'components.roles.button_action_render',
+                    [
+                        'role'          => $role,
+                        'currentRoleId' => $currentRoleId,
+                    ]
+                )->render();
             })
             ->addColumn('default', function ($role) {
-                $isChecked = $role->is_default ? 'checked' : '';
-                return '
-                <div class="custom-control custom-switch">
-                    <input type="checkbox"
-                        class="custom-control-input js-set-role-default"
-                        value="' . $role->id . '"
-                        id="set_role_default_' . $role->id . '" ' . $isChecked . '>
-                    <label class="custom-control-label" for="set_role_default_' . $role->id . '">
-                    </label>
-                </div>';
+                return view(
+                    'components.roles.switch_default_render',
+                    ['role' => $role]
+                )->render();
             })
-            ->rawColumns(['users', 'permissions', 'select', 'actions', 'default'])
+            ->rawColumns(['users', 'permissions', 'select', 'actions',
+                'default'])
             ->make(true);
     }
 
@@ -233,7 +229,7 @@ class RoleService
     {
         $ids = explode(',', $ids);
 
-        return $this->role->where('name', '<>', 'admin')
+        return $this->role->where('is_user_defined', true)
             ->whereIn('id', $ids)->delete();
     }
 }

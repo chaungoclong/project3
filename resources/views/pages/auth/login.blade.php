@@ -11,7 +11,7 @@
                 Sign in to start your session
             </p>
 
-            <form action="{{ route('login.process') }}" method="post">
+            <form action="{{ $url ?? route('login.form') }}" method="post">
                 @csrf
                 <div class="mb-3">
                     <div class="input-group">

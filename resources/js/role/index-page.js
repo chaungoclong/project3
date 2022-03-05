@@ -1,5 +1,5 @@
 import * as Utils from '../utils.js';
-import { URL } from '../config.js';
+import { URL, DATATABLE_LANG } from '../config.js';
 
 const SELECTOR_ROLE_TBL                 = '#role_table';
 const SELECTOR_DELETE_MULTIPLE_ROLE_BTN = '#delete_multiple_role';
@@ -14,6 +14,7 @@ const initRoleTable = () => {
     _roleTable = $(SELECTOR_ROLE_TBL).DataTable({
         processing: true,
         serverSide: true,
+        language: DATATABLE_LANG,
         ajax: {
             url: URL.admin.roles.index(),
             method: 'GET',
@@ -72,7 +73,7 @@ const selectRoleEvent = function(e) {
 const deleteOneRoleEvent = function(e) {
     let id = $(this).data('role-id');
     Swal.fire({
-        title: 'Do you want delete this role',
+        title: 'Bạn có muốn xóa quyền này',
         showCancelButton: true,
         confirmButtonText: 'Delete',
         icon: 'warning'
@@ -91,10 +92,10 @@ const deleteOneRoleEvent = function(e) {
 
 const deleteMultipleRoleEvent = function(e) {
     Swal.fire({
-        title: 'Do you want delete all role',
-        text: `${_checkeds.length} roles selected`,
+        title: 'Bạn có muốn xóa tất cả vai trò đã chọn',
+        text: `${_checkeds.length} vai trò đã chọn`,
         showCancelButton: true,
-        confirmButtonText: 'Delete all',
+        confirmButtonText: 'Xóa tất cả',
         icon: 'warning'
     }).then(result => {
         if (result.isConfirmed) {
@@ -111,11 +112,12 @@ const deleteMultipleRoleEvent = function(e) {
 
 const setRoleDefaultEvent = function(e) {
     let id = $(this).val();
+    console.log(id);
     let isDefault = $(this).prop('checked') ? 1 : 0;
     Swal.fire({
-        title: 'Do you want set this role is default',
+        title: 'Bạn có muốn đặt vai trò này thành vai trò mặc định',
         showCancelButton: true,
-        confirmButtonText: 'Set default',
+        confirmButtonText: 'Đặt mặc định',
         icon: 'warning'
     }).then(result => {
         if (result.isConfirmed) {

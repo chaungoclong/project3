@@ -8,25 +8,40 @@ use App\Services\Auth\AuthService;
 
 class RegisterController extends Controller
 {
-    public function register(RegisterFormRequest $request,
-        AuthService $authService) {
+    public function showFormRegister()
+    {
+        return view('pages.auth.register');
+    }
+
+    public function register(
+        RegisterFormRequest $request,
+        AuthService $authService
+    ) {
         try {
             $authService->register($request->validated());
-            return $this->redirectAfterRegister('register success');
+
+            return $this->redirectAfterRegister(
+                __('action success', ['Action' => 'Đăng ký'])
+            );
         } catch (\Exception $e) {
-            return $this->redirectIfFail($e->getMessage());
+            // dd($e);
+            return $this->redirectIfFail(
+                __('action fail', ['Action' => 'Đăng ký'])
+            );
         }
     }
 
     public function redirectAfterRegister($message)
     {
         alert()->success($message);
-        return redirect()->route('login.web.form');
+
+        return redirect()->route('login.form');
     }
 
     public function redirectIfFail($message)
     {
         alert()->error($message);
+
         return redirect()->back()->withInput();
     }
 }

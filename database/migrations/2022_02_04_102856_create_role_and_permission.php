@@ -17,7 +17,8 @@ class CreateRoleAndPermission extends Migration
             $table->increments('id');
             $table->string('title', 100);
             $table->string('name', 100)->unique();
-            $table->boolean('is_default')->nullable()->default(false);
+            $table->boolean('is_default')->default(false);
+            $table->boolean('is_user_defined')->default(true);
             $table->timestamps();
         });
 

@@ -7,27 +7,28 @@ use Illuminate\Http\Request;
 
 class LogoutController extends Controller
 {
-    public function getRedirectPath()
-    {
-        $user = auth()->user();
+    // public function getRedirectPath(): string
+    // {
+    //     $user = auth()->user();
 
-        if ($user->role === null || $user->hasRole('customer')) {
-            return route('login.web.form');
-        }
+    //     if ($user->isWebGroup()) {
+    //         return route('login.form');
+    //     }
 
-        return route('login.admin.form');
-    }
+    //     return route('admin.login.form');
+    // }
 
     public function logout(Request $request)
     {
-        $redirectPath = $this->getRedirectPath();
+        // $redirectPath = $this->getRedirectPath();
 
-        auth()->logout();
+        // auth()->logout();
 
-        $request->session()->invalidate();
+        // $request->session()->invalidate();
 
-        $request->session()->regenerateToken();
+        // $request->session()->regenerateToken();
 
-        return redirect($redirectPath);
+        // return redirect($redirectPath);
+        return logout();
     }
 }

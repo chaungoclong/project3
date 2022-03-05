@@ -13,20 +13,39 @@
 
             <form action="{{ route('register.process') }}" method="post">
                 @csrf
+                
                 <div class="mb-3">
                     <div class="input-group">
-                        <input class="form-control @error('name') is-invalid @enderror" 
-                            name="name" placeholder="Name" type="text" value="{{ old('name', '') }}">
-                            <div class="input-group-append">
-                                <div class="input-group-text">
-                                    <span class="fas fa-envelope">
-                                    </span>
-                                </div>
+                        <input 
+                            class="form-control @error('last_name') is-invalid @enderror" 
+                            name="last_name" placeholder="Last name" type="text" 
+                            value="{{ old('last_name', '') }}">
+
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <i class="fas fa-align-justify"></i>
                             </div>
-                        </input>
-                        <x-input-error for="name"/>
+                        </div>
+                        <x-input-error for="last_name"/>
                     </div>
                 </div>
+                   
+                <div class="mb-3">
+                    <div class="input-group">
+                        <input 
+                            class="form-control @error('first_name') is-invalid @enderror" 
+                            name="first_name" placeholder="First name" type="text" 
+                            value="{{ old('first_name', '') }}">
+
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                               <i class="fas fa-align-justify"></i>
+                            </div>
+                        </div>
+                        <x-input-error for="first_name"/>
+                    </div>
+                </div>
+                   
                 <div class="mb-3">
                     <div class="input-group">
                         <input class="form-control @error('email') is-invalid @enderror" 
@@ -67,7 +86,7 @@
             </form>
             <!-- /.social-auth-links -->
             <p class="mb-1">
-                <a href="{{ route('login.web.form') }}">
+                <a href="{{ route('login.form') }}">
                     Login
                 </a>
             </p>

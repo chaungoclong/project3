@@ -2157,7 +2157,8 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "BASE_URL": () => (/* binding */ BASE_URL),
-/* harmony export */   "URL": () => (/* binding */ URL)
+/* harmony export */   "URL": () => (/* binding */ URL),
+/* harmony export */   "DATATABLE_LANG": () => (/* binding */ DATATABLE_LANG)
 /* harmony export */ });
 // url goc
 var BASE_URL = 'http://127.0.0.1:8000'; // URL cho request ajax
@@ -2193,6 +2194,27 @@ var URL = {
 //         }
 //     }
 // }
+
+var DATATABLE_LANG = {
+  "decimal": "",
+  "emptyTable": "Không có bản ghi",
+  "info": "Hiển thị _START_ đến _END_ của _TOTAL_ bản ghi",
+  "infoEmpty": "Không có bản ghi",
+  "infoFiltered": "(filtered from _MAX_ total entries)",
+  "infoPostFix": "",
+  "thousands": ",",
+  "lengthMenu": "Hiển thị _MENU_ bản ghi trên trang",
+  "loadingRecords": "Đang tải...",
+  "processing": "Đang xử lý...",
+  "search": "Tìm kiếm:",
+  "zeroRecords": "Không tìm thấy bản ghi",
+  "paginate": {
+    "first": "Đầu",
+    "last": "Cuối",
+    "next": "Tiếp",
+    "previous": "Trước"
+  }
+};
 
 /***/ }),
 
@@ -2337,6 +2359,7 @@ var initRoleTable = function initRoleTable() {
   _roleTable = $(SELECTOR_ROLE_TBL).DataTable({
     processing: true,
     serverSide: true,
+    language: _config_js__WEBPACK_IMPORTED_MODULE_1__.DATATABLE_LANG,
     ajax: {
       url: _config_js__WEBPACK_IMPORTED_MODULE_1__.URL.admin.roles.index(),
       method: 'GET',
@@ -2396,7 +2419,7 @@ var selectRoleEvent = function selectRoleEvent(e) {
 var deleteOneRoleEvent = function deleteOneRoleEvent(e) {
   var id = $(this).data('role-id');
   Swal.fire({
-    title: 'Do you want delete this role',
+    title: 'Bạn có muốn xóa quyền này',
     showCancelButton: true,
     confirmButtonText: 'Delete',
     icon: 'warning'
@@ -2415,10 +2438,10 @@ var deleteOneRoleEvent = function deleteOneRoleEvent(e) {
 
 var deleteMultipleRoleEvent = function deleteMultipleRoleEvent(e) {
   Swal.fire({
-    title: 'Do you want delete all role',
-    text: "".concat(_checkeds.length, " roles selected"),
+    title: 'Bạn có muốn xóa tất cả vai trò đã chọn',
+    text: "".concat(_checkeds.length, " vai tr\xF2 \u0111\xE3 ch\u1ECDn"),
     showCancelButton: true,
-    confirmButtonText: 'Delete all',
+    confirmButtonText: 'Xóa tất cả',
     icon: 'warning'
   }).then(function (result) {
     if (result.isConfirmed) {
@@ -2437,11 +2460,12 @@ var setRoleDefaultEvent = function setRoleDefaultEvent(e) {
   var _this = this;
 
   var id = $(this).val();
+  console.log(id);
   var isDefault = $(this).prop('checked') ? 1 : 0;
   Swal.fire({
-    title: 'Do you want set this role is default',
+    title: 'Bạn có muốn đặt vai trò này thành vai trò mặc định',
     showCancelButton: true,
-    confirmButtonText: 'Set default',
+    confirmButtonText: 'Đặt mặc định',
     icon: 'warning'
   }).then(function (result) {
     if (result.isConfirmed) {
@@ -2643,14 +2667,13 @@ function handleError(jqXHR, textStatus, errorThrow) {
   var title = textStatus.toUpperCase();
   var html = '';
   var message = '';
-  var errors = '';
-  message = 'message' in response ? "<h5 class=\"text-danger\">".concat(response.message, "</h5>") : '';
+  var errors = ''; // message = ('message' in response) ? `<h5 class="text-danger">${response.message}</h5>` : '';
 
   if ('errors' in response) {
     errors = "\n            <table class=\"table table-sm table-bordered mt-2\">\n            <thead>\n                <tr>\n                    <th>Field</th>\n                    <th>Error</th>\n                </tr>\n            </thead>\n            <tbody>";
 
     for (var field in response.errors) {
-      errors += "\n                <tr>\n                    <td>".concat(field, "</td>\n                    <td>").concat(response.errors[field][0], "</td>\n                </tr>");
+      errors += "\n                <tr>\n                    <td>".concat(field, "</td>\n                    <td class=\"text-danger\">").concat(response.errors[field][0], "</td>\n                </tr>");
     }
 
     errors += "</tbody></table>";
