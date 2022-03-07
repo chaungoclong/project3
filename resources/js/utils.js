@@ -55,7 +55,7 @@ export function handleError(jqXHR, textStatus, errorThrow) {
     let message  = '';
     let errors   = '';
 
-    // message = ('message' in response) ? `<h5 class="text-danger">${response.message}</h5>` : '';
+    message = ('message' in response) ? `<h5 class="text-danger">${response.message}</h5>` : '';
 
     if ('errors' in response) {
         errors = `

@@ -17,15 +17,14 @@ class HasPermission
      */
     public function handle(Request $request, Closure $next, ...$permissions)
     {
-        $permissions = empty($permissions) ? [null] : $permissions;
-        $user        = auth()->user();
+        $permissions = trimStringArray($permissions);
 
-        foreach ($permissions as $permission) {
-            $permission = trim($permission);
-            if (!$user->can($permission)) {
-                throw new NoPermissionException('khong co quyen');
-            }
+        if (!\Gate::check($permissions)) {
+            throw new NoPermissionException(
+                __('unauthorized to do', ['action' => 'truy cập'])
+            );
         }
+
         return $next($request);
     }
 }

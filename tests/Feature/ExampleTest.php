@@ -12,10 +12,8 @@ class ExampleTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function testExample()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        dd(auth()->user());
     }
 }

@@ -2667,7 +2667,8 @@ function handleError(jqXHR, textStatus, errorThrow) {
   var title = textStatus.toUpperCase();
   var html = '';
   var message = '';
-  var errors = ''; // message = ('message' in response) ? `<h5 class="text-danger">${response.message}</h5>` : '';
+  var errors = '';
+  message = 'message' in response ? "<h5 class=\"text-danger\">".concat(response.message, "</h5>") : '';
 
   if ('errors' in response) {
     errors = "\n            <table class=\"table table-sm table-bordered mt-2\">\n            <thead>\n                <tr>\n                    <th>Field</th>\n                    <th>Error</th>\n                </tr>\n            </thead>\n            <tbody>";

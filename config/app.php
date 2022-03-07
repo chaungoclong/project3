@@ -235,8 +235,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
-        'RoleRootType' => App\Constants\RoleRootType::class,
-        'GenderType' => App\Constants\GenderType::class,
         
     ],
 

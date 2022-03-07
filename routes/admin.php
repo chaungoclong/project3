@@ -39,15 +39,13 @@ Route::middleware(
         Route::get(
             'get-datatables',
             [RoleController::class, 'getDatatables']
-        )->name('get_datatables')
-            ->middleware('hasPermission:view-role');
+        )->name('get_datatables');
 
         // delete multiple role
         Route::delete(
             'delete-multiple',
             [RoleController::class, 'deleteMultiple']
-        )->name('delete_multiple')
-            ->middleware('hasPermission:delete-role');
+        )->name('delete_multiple');
 
         // set role default
         Route::patch(

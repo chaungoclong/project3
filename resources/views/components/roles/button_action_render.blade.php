@@ -8,7 +8,7 @@
         </a>
    @endif
 
-    @if ($role->name !== 'admin')
+    @if ($role->name !== 'admin' && $role->id !== $currentRoleId)
         <a href="{{ route('admin.roles.edit', $role->id ?? '') }}" class="p-1" title="Sửa">
             <i class="far fa-edit fa-lg text-primary"></i>
         </a>

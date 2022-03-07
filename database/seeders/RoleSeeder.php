@@ -18,29 +18,29 @@ class RoleSeeder extends Seeder
     {
         $datas = [
             [
-                'title'           => 'Admin',
-                'name'            => 'admin',
-                'is_user_defined' => false,
-                'is_default'      => false,
+                'title'           => config('role.admin.title'),
+                'name'            => config('role.admin.name'),
+                'is_user_defined' => config('role.admin.is_user_defined'),
+                'is_default'      => config('role.admin.is_default'),
                 'permissions'     => Permission::all(),
             ],
             [
-                'title'           => 'Customer',
-                'name'            => 'customer',
-                'is_user_defined' => false,
-                'is_default'      => true,
+                'title'           => config('role.customer.title'),
+                'name'            => config('role.customer.name'),
+                'is_user_defined' => config('role.customer.is_user_defined'),
+                'is_default'      => config('role.customer.is_default'),
             ],
             [
-                'title'           => 'Employee',
-                'name'            => 'employee',
-                'is_user_defined' => false,
-                'is_default'      => false,
+                'title'           => config('role.employee.title'),
+                'name'            => config('role.employee.name'),
+                'is_user_defined' => config('role.employee.is_user_defined'),
+                'is_default'      => config('role.employee.is_default'),
             ],
         ];
 
         foreach ($datas as $data) {
             Role::firstOrCreate(
-                Arr::except($data,['permissions'])
+                Arr::except($data, ['permissions'])
             )->givePermissionTo($data['permissions'] ?? null);
         }
     }

@@ -118,7 +118,7 @@ use Illuminate\Support\Facades\Route;
 
 // });
 Route::get('test', function () {
-    dd(getRedirectPathAfterLogout());
+    dd(arrayInArray([5], [1, 2, 3]));
 });
 
 Route::middleware(['auth'])->group(

@@ -17,7 +17,7 @@ use Illuminate\Validation\Rule;
 
 class RoleController extends Controller
 {
-    // private RoleService $roleService;
+    private RoleService $roleService;
 
     public function __construct(RoleService $roleService)
     {
@@ -30,6 +30,8 @@ class RoleController extends Controller
      */
     public function index()
     {
+        checkPermission('view_role');
+
         return view('pages.admin.roles.index');
     }
 
@@ -41,6 +43,8 @@ class RoleController extends Controller
      */
     public function getDatatables(Request $request)
     {
+        checkPermission('view_role');
+
         return $this->roleService->getDatatables($request);
     }
     /**
@@ -50,7 +54,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-        abort_if(! auth()->user()->can('create-role'), 403);
+        checkPermission('create_role');
+
         return $this->roleService->getCreateView();
     }
 
@@ -62,6 +67,8 @@ class RoleController extends Controller
      */
     public function store(CreateFormRequest $request)
     {
+        checkPermission('create_role');
+
         try {
             $this->roleService->create($request->all());
             alert()->success(__('create success', ['name' => 'vai trò']));
@@ -94,6 +101,8 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        checkPermission('edit_role');
+
         return $this->roleService->getEditView($role);
     }
 
@@ -107,6 +116,8 @@ class RoleController extends Controller
      */
     public function update(UpdateFormRequest $request, Role $role)
     {
+        checkPermission('edit_role');
+
         try {
             $this->roleService->update($role, $request->all());
             alert()->success(__('update success', ['name' => 'vai trò']));
@@ -128,8 +139,11 @@ class RoleController extends Controller
      */
     public function setRoleDefault(SetDefaultFormRequest $request, Role $role)
     {
+        checkPermission('edit_role');
+
         try {
             $this->roleService->setRoleDefault($role, $request->validated());
+            
             return response()->json(
                 ['message' => __("set default success")],
                 200
@@ -151,8 +165,11 @@ class RoleController extends Controller
      */
     public function destroy(Role $role, DeleteFormRequest $request)
     {
+        checkPermission('delete_role');
+
         try {
             $this->roleService->delete($role);
+
             return response()->json(
                 ['message' => __('delete success', ['name' => 'vai trò'])],
                 200
@@ -174,8 +191,11 @@ class RoleController extends Controller
      */
     public function deleteMultiple(DeleteMultipleFormRequest $request)
     {
+        checkPermission('delete_role');
+
         try {
             $this->roleService->deleteMultiple($request->ids);
+
             return response()->json(
                 ['message' => __('delete success', ['name' => 'vai trò'])],
                 200

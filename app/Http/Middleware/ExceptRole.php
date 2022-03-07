@@ -24,7 +24,9 @@ class ExceptRole
             $role = trim($role);
 
             if ($user->hasRole($role)) {
-                throw new NoPermissionException('Không có quyền truy cập');
+                throw new NoPermissionException(
+                    __('unauthorized to do', ['action' => 'truy cập'])
+                );
             }
         }
 

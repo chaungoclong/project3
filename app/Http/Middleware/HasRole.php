@@ -21,7 +21,9 @@ class HasRole
         $role = trim($role);
 
         if (!$user->hasRole($role)) {
-            throw new NoPermissionException('khong co quyen');
+            throw new NoPermissionException(
+                __('unauthorized to do', ['action' => 'truy cập'])
+            );
         }
 
         return $next($request);

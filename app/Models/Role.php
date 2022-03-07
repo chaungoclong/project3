@@ -69,16 +69,16 @@ class Role extends Model implements Auditable
 
     public function isCustomer(): bool
     {
-        return $this->name === \RoleRootType::CUSTOMER;
+        return $this->name === config('role.customer.name');
     }
 
     public function isAdmin(): bool
     {
-        return $this->name === \RoleRootType::ADMIN;
+        return $this->name === config('role.admin.name');
     }
 
     public function isEmployee(): bool
     {
-        return $this->name === \RoleRootType::EMPLOYEE;
+        return $this->name === config('role.employee.name');
     }
 }

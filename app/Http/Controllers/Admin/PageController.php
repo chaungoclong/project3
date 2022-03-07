@@ -9,6 +9,8 @@ class PageController extends Controller
 {
     public function dashboard()
     {
+        checkPermission('view_dashboard');
+        
         return view('pages.admin.dashboard');
     }
 }

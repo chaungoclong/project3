@@ -26,10 +26,6 @@ class UpdateFormRequest extends FormRequest
     {
         return [
             'title' => ['required'],
-            'name'  => [
-                'required', 
-                Rule::unique('roles', 'name')->ignore($this->role)
-            ],
         ];
     }
 }

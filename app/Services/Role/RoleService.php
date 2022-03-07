@@ -37,7 +37,7 @@ class RoleService
     public function getEditView(Role $role)
     {
         // dd($role->isCannotChange(), $role->is_user_defined);
-        if ($role->isCannotChange()) {
+        if ($role->isAdmin()) {
             throw new NoPermissionException(
                 __('cannot edit this', ['name' => 'vai trò'])
             );
@@ -79,7 +79,7 @@ class RoleService
      */
     public function update(Role $role, array $data): Role
     {
-        if ($role->isCannotChange()) {
+        if ($role->isAdmin()) {
             throw new NoPermissionException(
                 __('cannot edit this', ['name' => 'vai trò'])
             );
